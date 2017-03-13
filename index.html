@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Canvas Stuff</title>
+	<style>
+		#cover {
+			width:400px;
+			height:400px;
+			margin:150px auto;
+			display:block;
+		}
+		</style>
+</head>
+<body>
+	<canvas id="cover" width="400" height="400"></canvas>
+	<script>
+		var HOUR_HAND = "hour";
+		var MINUTE_HAND = "minute";
+		var SECOND_HAND = "minute";
+		var canvas = document.getElementById('cover');
+		var ctx = canvas.getContext('2d');
+		var points;
+		//fill the background
+		ctx.fillStyle = '#cc8800';
+		ctx.fillRect(0, 0, 400, 400);
+
+		//fill in clock face
+		ctx.fillStyle = '#ffffff';
+		ctx.arc(200, 200, 150,0, 2*Math.PI);
+		ctx.fill();
+		ctx.strokeStyle = '#000000';
+		ctx.lineWidth = 5;
+		ctx.stroke();
+
+		drawTime()
+		
+		
+
+		/** 
+		 * Given a hand, and an applicable time part this function will return an X and Y co-ordinate. 
+		 * @hand 1 for minute, 0 for hour
+		 * @time 0-59 for minute, 0-12 for hour
+		**/
+		function timeToPoint(hand, time) {
+			var degrees = 0;
+			var centerX = 200;
+			var centerY = 200;
+			var radius = 130;
+			if(hand == HOUR_HAND) {
+				degrees = 360/12;
+				time=time-4
+				radius = 90;
+			}
+			else {
+				degrees = 360/60;
+				time=time-16;
+			}
+			var radians =  (degrees*(time+1)) * Math.PI/180;
+			var x = centerX + radius * Math.cos(radians);
+    		var y = centerY + radius * Math.sin(radians);
+    		return {x:x,y:y}
+		}
+
+		function drawTime() {
+			var canvas = document.getElementById('cover');
+			var ctx = canvas.getContext('2d');
+
+			var tod = new Date();
+
+			//clear in clock face
+			ctx.beginPath();
+			ctx.fillStyle = '#ffffff';
+			ctx.arc(200, 200, 150,0, 2*Math.PI);
+			ctx.fill();
+			ctx.strokeStyle = '#000000';
+			ctx.lineWidth = 5;
+			ctx.stroke();
+
+			//draw the hour hand
+			ctx.strokeStyle = '#000000';
+			ctx.lineWidth = 3;
+			ctx.beginPath();
+			ctx.moveTo(200, 200);
+			points = timeToPoint(HOUR_HAND,tod.getHours()%12);
+			ctx.lineTo(points.x, points.y);
+			ctx.stroke();
+
+			//draw the minute hand
+			ctx.strokeStyle = '#000000';
+			ctx.lineWidth = 2;
+			ctx.beginPath();
+			ctx.moveTo(200, 200);
+			points = timeToPoint(MINUTE_HAND,tod.getMinutes());
+			ctx.lineTo(points.x, points.y);
+			ctx.stroke();
+
+			//draw the second hand
+			ctx.strokeStyle = '#ff0000';
+			ctx.lineWidth = 1;
+			ctx.beginPath();
+			ctx.moveTo(200, 200);
+			points = timeToPoint(MINUTE_HAND,tod.getSeconds());
+			ctx.lineTo(points.x, points.y);
+			ctx.stroke();
+		}
+
+		setInterval(drawTime,1000)
+	</script>
+</body>
+</html>
