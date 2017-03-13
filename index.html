@@ -31,10 +31,8 @@
 		ctx.strokeStyle = '#000000';
 		ctx.lineWidth = 5;
 		ctx.stroke();
-
-		drawTime()
 		
-		
+		drawTime();
 
 		/** 
 		 * Given a hand, and an applicable time part this function will return an X and Y co-ordinate. 
@@ -76,6 +74,8 @@
 			ctx.lineWidth = 5;
 			ctx.stroke();
 
+			drawDashes();
+
 			//draw the hour hand
 			ctx.strokeStyle = '#000000';
 			ctx.lineWidth = 3;
@@ -102,6 +102,42 @@
 			points = timeToPoint(MINUTE_HAND,tod.getSeconds());
 			ctx.lineTo(points.x, points.y);
 			ctx.stroke();
+		}
+
+		function drawDashes() {
+			var degrees = 360/60;
+			var centerX = 200;
+			var centerY = 200;
+			var radius = 150;
+			var radians = 0;
+			var x = 0;
+			var y = 0;
+			
+			for(a = 0;a < 60;a +=5) {
+				radius = 150;
+				radians =  (degrees*(a+1)) * Math.PI/180;
+				x = centerX + radius * Math.cos(radians);
+	    		y = centerY + radius * Math.sin(radians);
+
+	    		ctx.strokeStyle = '#0000aa';
+				ctx.lineWidth = 1;
+				if((a % 15) == 0) {
+					ctx.lineWidth = 2;
+				}
+				ctx.beginPath();
+				ctx.moveTo(x, y);
+
+				radius = 145;
+				if((a % 15) == 0) {
+					radius = 140;
+				}
+
+				radians =  (degrees*(a+1)) * Math.PI/180;
+				x = centerX + radius * Math.cos(radians);
+	    		y = centerY + radius * Math.sin(radians);
+	    		ctx.lineTo(x, y);
+				ctx.stroke();
+			}
 		}
 
 		setInterval(drawTime,1000)
